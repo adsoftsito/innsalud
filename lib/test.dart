@@ -1,30 +1,8 @@
+// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
+
 import 'package:english_words/english_words.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:graphql_flutter/graphql_flutter.dart';
-import 'LoginPage.dart';
-import 'LogsPage.dart';
-import "SeguimientoPage.dart";
-import "RecomendacionesPage.dart";
-//import "HistorialPage.dart";
-import "PerfilPage.dart";
-import "MyAppState.dart";
-
-//import 'dart:convert';
-//import 'dart:async';
-//import 'package:http/http.dart' as http;
-//import 'package:flutter/services.dart' show rootBundle;
-//import 'package:rflutter_alert/rflutter_alert.dart';
-
-final HttpLink httpLink = HttpLink("https://mysite-hdva.onrender.com/graphql/");
-
-final ValueNotifier<GraphQLClient> client = ValueNotifier<GraphQLClient>(
-  GraphQLClient(
-    link: httpLink,
-    cache: GraphQLCache(),
-  ),
-);
-
 
 void main() {
   runApp(MyApp());
@@ -38,66 +16,33 @@ class MyApp extends StatelessWidget {
     return ChangeNotifierProvider(
       create: (context) => MyAppState(),
       child: MaterialApp(
-        title: 'innSalud',
+        title: 'Namer App',
         theme: ThemeData(
           useMaterial3: true,
-          colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
-
+          colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepOrange),
         ),
         home: MyHomePage(),
       ),
     );
   }
 }
-/*
+
 class MyAppState extends ChangeNotifier {
   var current = WordPair.random();
   var history = <WordPair>[];
-  var token = "";
-  var username = "";
 
   GlobalKey? historyListKey;
 
-  /*
-  final url = Uri.parse("https://fastapi-ml-latest.onrender.com/score");
-  final headers = {"Content-Type": "application/json;charset=UTF-8"};
-
-  void callModel() async {
-        print('hello model...');
-        try {
-        final prediction_instance = {
-         "age": 64,
-         "sex": 1,
-         "cp": 3,
-         "trestbps": 120,
-         "chol": 267,
-         "fbs": 0,
-         "restecg": 0,
-        "thalach": 99,
-        "exang": 1,
-        "oldpeak": 1.8,
-        "slope": 1,
-        "ca": 2,
-        "thal": 2
-      };
-
-      final res = await http.post(url, headers: headers, body: jsonEncode(prediction_instance));
-    
-      if (res.statusCode == 200) {
-        final json_prediction = (res.body);
-                 print(  json_prediction);
-      }
-      else {
-        print('error');
-      }
-    } catch (e) {
-      print(e.toString());
-    }
-
- }*/
+  void getNext() {
+    history.insert(0, current);
+    var animatedList = historyListKey?.currentState as AnimatedListState?;
+    animatedList?.insertItem(0);
+    current = WordPair.random();
+    notifyListeners();
+  }
 
   var favorites = <WordPair>[];
-  /*
+
   void toggleFavorite([WordPair? pair]) {
     pair = pair ?? current;
     if (favorites.contains(pair)) {
@@ -111,9 +56,9 @@ class MyAppState extends ChangeNotifier {
   void removeFavorite(WordPair pair) {
     favorites.remove(pair);
     notifyListeners();
-  }*/
+  }
 }
-*/
+
 class MyHomePage extends StatefulWidget {
   @override
   State<MyHomePage> createState() => _MyHomePageState();
@@ -129,44 +74,26 @@ class _MyHomePageState extends State<MyHomePage> {
     Widget page;
     switch (selectedIndex) {
       case 0:
-        page = LoginPage();
+        page = GeneratorPage();
+        break;
       case 1:
-        page =  SeguimientoPage();
-      case 2:
-        page = RecomendacionesPage();
-      case 3:
-        page = LogsPage(); //HistorialPage();
-      case 4:
-        page = PerfilPage();
-
+        page = FavoritesPage();
+        break;
       default:
         throw UnimplementedError('no widget for $selectedIndex');
     }
 
     // The container for the current page, with its background color
     // and subtle switching animation.
-/*
-var mainArea = ColoredBox(
-      color: colorScheme.surfaceContainerHighest,
-      child: AnimatedSwitcher(
-        duration: Duration(milliseconds: 200),
-        child: page,
-      ),
-    );
-*/
-
- // and subtle switching animation.
     var mainArea = ColoredBox(
-      color: colorScheme.onError,
+      color: colorScheme.surfaceVariant,
       child: AnimatedSwitcher(
         duration: Duration(milliseconds: 200),
         child: page,
       ),
     );
 
-    return GraphQLProvider (
-      client: client, 
-      child : Scaffold(
+    return Scaffold(
       body: LayoutBuilder(
         builder: (context, constraints) {
           if (constraints.maxWidth < 450) {
@@ -177,40 +104,40 @@ var mainArea = ColoredBox(
                 Expanded(child: mainArea),
                 SafeArea(
                   child: BottomNavigationBar(
+		    
                     items: [
                       BottomNavigationBarItem(
                         icon: Icon(Icons.home),
                         label: 'Login',
-                        backgroundColor: Color.fromRGBO(0, 0, 255, 0)
                       ),
                       BottomNavigationBarItem(
-                        icon: Icon(Icons.add_card),
+                        icon: Icon(Icons.favorite),
                         label: 'Seguimiento',
-                        backgroundColor: Color.fromRGBO(0, 0, 255, 0)
-
                       ),
+		      
                       BottomNavigationBarItem(
-                        icon: Icon(Icons.heart_broken),
+                        icon: Icon(Icons.alarm_rounded),
                         label: 'Recomendaciones',
-                        backgroundColor: Color.fromRGBO(0, 0, 255, 0)
-
-                      ),
-
+		      ),
+		      /* 
                       BottomNavigationBarItem(
-                        icon: Icon(Icons.abc_sharp),
-                        label: 'Historial',
-                        backgroundColor: Color.fromRGBO(0, 0, 255, 0)
-
-                      ),
-                      
+                        icon: Icon(Icons.area_chart),
+                        label: 'H',
+		      ),   	
                       BottomNavigationBarItem(
-                        icon: Icon(Icons.add_box),
-                        label: 'Perfil',
-                        backgroundColor: Color.fromRGBO(0, 0, 255, 0)
-
-                      ),
-       
+                        icon: Icon(Icons.build),
+                        label: 'P',
+		      ),*/
                     ],
+		    /*
+                    selectedIndex: selectedIndex,
+                    onDestinationSelected: (value) {
+                      
+		      setState(() {
+                        selectedIndex = value;
+                      });
+
+                    },  */
                     currentIndex: selectedIndex,
                     onTap: (value) {
                       setState(() {
@@ -233,24 +160,21 @@ var mainArea = ColoredBox(
                         label: Text('Login'),
                       ),
                       NavigationRailDestination(
-                        icon: Icon(Icons.add_card),
+                        icon: Icon(Icons.favorite),
                         label: Text('Seguimiento'),
                       ),
                       NavigationRailDestination(
-                        icon: Icon(Icons.heart_broken),
+                        icon: Icon(Icons.alarm_rounded),
                         label: Text('Recomendaciones'),
-                      ),
-
+		      ),
                       NavigationRailDestination(
-                        icon: Icon(Icons.abc_sharp),
+                        icon: Icon(Icons.area_chart),
                         label: Text('Historial'),
-                      ),
-                      
+		      ),	
                       NavigationRailDestination(
-                        icon: Icon(Icons.add_box),
+                        icon: Icon(Icons.build),
                         label: Text('Perfil'),
-                      ),
-                      
+		      ),
                     ],
                     selectedIndex: selectedIndex,
                     onDestinationSelected: (value) {
@@ -266,14 +190,60 @@ var mainArea = ColoredBox(
           }
         },
       ),
-     ),
     );
   }
 }
 
+class GeneratorPage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    var appState = context.watch<MyAppState>();
+    var pair = appState.current;
 
+    IconData icon;
+    if (appState.favorites.contains(pair)) {
+      icon = Icons.favorite;
+    } else {
+      icon = Icons.favorite_border;
+    }
 
-/*
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Expanded(
+            flex: 3,
+            child: HistoryListView(),
+          ),
+          SizedBox(height: 10),
+          BigCard(pair: pair),
+          SizedBox(height: 10),
+          Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              ElevatedButton.icon(
+                onPressed: () {
+                  appState.toggleFavorite();
+                },
+                icon: Icon(icon),
+                label: Text('Like'),
+              ),
+              SizedBox(width: 10),
+              ElevatedButton(
+                onPressed: () {
+                  appState.getNext();
+                },
+                child: Text('Next'),
+              ),
+            ],
+          ),
+          Spacer(flex: 2),
+        ],
+      ),
+    );
+  }
+}
+
 class BigCard extends StatelessWidget {
   const BigCard({
     Key? key,
@@ -316,9 +286,7 @@ class BigCard extends StatelessWidget {
     );
   }
 }
-*/
 
-/*
 class FavoritesPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -369,19 +337,13 @@ class FavoritesPage extends StatelessWidget {
   }
 }
 
-*/
-
-/*
-
 class HistoryListView extends StatefulWidget {
   const HistoryListView({Key? key}) : super(key: key);
 
   @override
   State<HistoryListView> createState() => _HistoryListViewState();
 }
-*/
 
-/*
 class _HistoryListViewState extends State<HistoryListView> {
   /// Needed so that [MyAppState] can tell [AnimatedList] below to animate
   /// new items.
@@ -435,6 +397,5 @@ class _HistoryListViewState extends State<HistoryListView> {
       ),
     );
   }
-  
 }
-*/
+

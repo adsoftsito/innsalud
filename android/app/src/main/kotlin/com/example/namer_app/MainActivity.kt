@@ -1,4 +1,4 @@
-package com.adsoftsito.namer_app
+package com.adsoftsito.innsalud
 
 import io.flutter.embedding.android.FlutterActivity
 
