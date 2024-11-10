@@ -3,10 +3,21 @@ import 'package:graphql_flutter/graphql_flutter.dart';
 import 'blog_row.dart';
 
 const String query = """
-query   Links {
-  links{
-    url
-    description    
+query   Records {
+  records
+  {
+    talla
+    peso
+    cintura
+    cadera
+    actfisica
+    actfisican
+    bebidasugar
+    bebidasugarn
+    fecha
+    postedBy {
+      username
+    }
   }
 }
 """;
@@ -31,16 +42,17 @@ class LogsPage extends StatelessWidget {
                       child: Text("No logs found!"),
                     );
                   }
-                  final posts = result.data!['links'];
+                  final posts = result.data!['records'];
                   return ListView.builder(
                     itemCount: posts.length,
                     itemBuilder: (context, index) {
                       final post = posts[index];
-                      final url = post['url'];
-                      final description = post['description'];
+                      final url = post['talla'];
+                      final description = post['peso'];
+                      //final user = post["postedBy"]["username"];
                       return BlogRow(
                         url: url,
-                        description: description,
+                        description: description, // + " by " + user,
                       );
                     },
                   );

@@ -125,24 +125,19 @@ Future<QueryResult> _login() async {
                       return cache;
                   },
                   onCompleted: (result) {
-                    
-            // Update the cache using refetchQuery
-                    if (result == null) {
+                  if (result == null) {
                        print('Completed with errors ');
                     }
                     else {
                       print('ok ...');
+                      appState.username = userNameController.text;
                       appState.token = result["tokenAuth"]["token"].toString();
                       print(result["tokenAuth"]["token"]);
                     }
                   },
                   onError: (error)  {
                     print('error :');
-                    
-                        appState.username = error!.graphqlErrors[0].message.toString();
-
-                    
-                    
+                    appState.error = error!.graphqlErrors[0].message.toString();
                     print(error?.graphqlErrors[0].message);
                   },
 
@@ -153,14 +148,12 @@ Future<QueryResult> _login() async {
                   onPressed: ()  {
                     // ignore: await_only_futures
                     runMutation({ "username": userNameController.text,
-                                                 "password": passwordController.text
+                                   "password": passwordController.text
                                   });
                   },
                   child: const Text('Login'),
                    );
-                }
-            
-            
+                }           
             ),
             Text(
               "error :${appState.username}",

@@ -16,14 +16,11 @@ import "MyAppState.dart";
 //import 'package:flutter/services.dart' show rootBundle;
 //import 'package:rflutter_alert/rflutter_alert.dart';
 
-final HttpLink httpLink = HttpLink("https://mysite-hdva.onrender.com/graphql/");
 
-final ValueNotifier<GraphQLClient> client = ValueNotifier<GraphQLClient>(
-  GraphQLClient(
-    link: httpLink,
-    cache: GraphQLCache(),
-  ),
-);
+
+
+//final HttpLink httpLink = HttpLink("https://mysite-hdva.onrender.com/graphql/");
+
 
 
 void main() {
@@ -35,8 +32,14 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
+
     return ChangeNotifierProvider(
       create: (context) => MyAppState(),
+
+      
+
+
       child: MaterialApp(
         title: 'innSalud',
         theme: ThemeData(
@@ -124,8 +127,23 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    var colorScheme = Theme.of(context).colorScheme;
 
+    var appState = context.watch<MyAppState>();
+    final AuthLink authLink = AuthLink(
+    getToken: () async {
+        print ('token ${appState.token} OK');
+        return 'JWT ${appState.token}';
+        },
+    );
+    final Link httpLink = authLink.concat(HttpLink('https://adsoftsito-api.onrender.com/graphql/'));
+    final ValueNotifier<GraphQLClient> client = ValueNotifier<GraphQLClient>(
+      GraphQLClient(
+        link: httpLink,
+        cache: GraphQLCache(),
+      ),
+    );
+
+    var colorScheme = Theme.of(context).colorScheme;
     Widget page;
     switch (selectedIndex) {
       case 0:

@@ -1,7 +1,42 @@
-import 'package:flutter/material.dart';
-//import 'package:innsalud/main.dart';
-import 'package:provider/provider.dart';
 import "MyAppState.dart";
+import 'package:flutter/material.dart';
+import 'package:graphql_flutter/graphql_flutter.dart';
+import 'package:provider/provider.dart';
+
+String linkPostMutation = """
+mutation CreateRecord(\$talla : Int!,  
+                      \$cintura : Int!,
+                      \$cadera : Int!,
+                      \$peso : Float!,  
+                      \$actfisica : Int!,
+                      \$actfisican : Int!,  
+                      \$bebidasugar : Int!,
+                      \$bebidasugarn : Int!,                      
+                      ) {
+  createRecord(
+    talla: \$talla 
+    cintura: \$cintura
+    cadera: \$cadera 
+    peso: \$peso
+    actfisica: \$actfisica 
+    actfisican: \$actfisican
+    bebidasugar: \$bebidasugar 
+    bebidasugarn: \$bebidasugarn
+  ) {
+    talla
+    peso
+    cintura
+    cadera
+    actfisica
+    actfisican
+    bebidasugar
+    bebidasugarn
+    postedBy {
+      username
+    }
+  }
+}
+""";
 
 class SeguimientoPage extends StatelessWidget {
   @override
@@ -22,7 +57,8 @@ class SeguimientoPage extends StatelessWidget {
         children: [
 
                 Text(
-                  "Bienvenido :  Angel",
+                   "Bienvenido :${appState.username}",
+
                 ),
           SizedBox(height: 20),
 
@@ -84,12 +120,58 @@ class SeguimientoPage extends StatelessWidget {
            Row(
             mainAxisSize: MainAxisSize.min,
             children: [
+             Mutation(
+               options: MutationOptions(
+                 document: gql(linkPostMutation),
+                 // ignore: void_checks
+                 update: (cache, result) {
+                     return cache;
+                 },
+                 onCompleted: (result) {
+                 if (result == null) {
+                      print('Completed with errors ');
+                   }  else {
+                     print('ok ...');
+                     print(result);
+                   }
+                 },
+                 onError: (error)  {
+                   print('error :');
+                   appState.error = error!.graphqlErrors[0].message.toString();
+                   print(error?.graphqlErrors[0].message);
+                 },
+
+               ),
+               builder: ( runMutation,  result) {
+
+                 return ElevatedButton(
+                 onPressed: ()  {
+                   // ignore: await_only_futures
+                   runMutation({  
+                                  "talla": 190,
+                                  "peso": 90.5,
+                                  "cintura": 90,
+                                  "cadera": 80,
+                                  "actfisica": 1,
+                                  "actfisican": 5,
+                                  "bebidasugar" : 1,
+                                  "bebidasugarn": 5
+
+                               });
+                 },
+                 child: const Text('Guardar registro'),
+                  );
+               }          
+              ),
+
+              /*
               ElevatedButton(
                 onPressed: () {
                   //appState.callModel();
                 },
                 child: Text('Guardar registro'),
               ),
+              */
             ],
           ),
         ],

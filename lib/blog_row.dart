@@ -2,8 +2,8 @@
 import 'package:flutter/material.dart';
 
 class BlogRow extends StatelessWidget {
-  final String url;
-  final String description;
+  final int url;
+  final double description;
 
   const BlogRow({
     Key? key,
@@ -24,7 +24,7 @@ class BlogRow extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  url,
+                  url.toString(),
                   style: Theme.of(context)
                       .textTheme
                       .headlineMedium
@@ -34,7 +34,7 @@ class BlogRow extends StatelessWidget {
                   height: 10,
                 ),
                 Text(
-                  description,
+                  description.toString(),
                   style: Theme.of(context)
                       .textTheme
                       .bodyMedium
